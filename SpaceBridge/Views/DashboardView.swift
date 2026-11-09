@@ -3,7 +3,19 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(AppModel.self) private var model
 
-    private let columns = [GridItem(.adaptive(minimum: 190), spacing: 12)]
+    private func categoryCard(_ summary: StorageSummary) -> some View {
+        SectionCard("Storage by Category", systemImage: "chart.pie") {
+            CategoryOverview(summary: summary)
+        }
+    }
+
+    private func recentCard(_ summary: StorageSummary) -> some View {
+        SectionCard("Recently Modified Large Files", systemImage: "clock.arrow.circlepath") {
+            RecentFilesList(files: summary.recentLargeFiles)
+        }
+    }
+
+    private let columns = [GridItem(.adaptive(minimum: 150), spacing: 10)]
 
     var body: some View {
         let summary = model.scan.summary
@@ -38,13 +50,15 @@ struct DashboardView: View {
                 }
 
                 if summary.hasScanData {
-                    HStack(alignment: .top, spacing: 16) {
-                        SectionCard("Storage by Category", systemImage: "chart.pie") {
-                            CategoryOverview(summary: summary)
+                    // Side by side on wide windows, stacked on small ones.
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .top, spacing: 12) {
+                            categoryCard(summary).frame(minWidth: 440)
+                            recentCard(summary).frame(minWidth: 300)
                         }
-                        .frame(minWidth: 420)
-                        SectionCard("Recently Modified Large Files", systemImage: "clock.arrow.circlepath") {
-                            RecentFilesList(files: summary.recentLargeFiles)
+                        VStack(spacing: 12) {
+                            categoryCard(summary)
+                            recentCard(summary)
                         }
                     }
                     SectionCard("Storage Trend", systemImage: "chart.xyaxis.line") {
@@ -70,7 +84,7 @@ struct DashboardView: View {
                 }
                 PrivacyNotice().padding(.top, 4)
             }
-            .padding(20)
+            .padding(16)
         }
         .navigationTitle("Dashboard")
         .task { await model.scan.refreshSummary() }
@@ -91,7 +105,7 @@ private struct DiskOverviewCard: View {
                         Text(PercentFormatter.string(volume.usedFraction) + " used").font(.title3).monospacedDigit()
                     }
                     StackedCapacityBar(volume: volume, categories: summary.categories)
-                    HStack(spacing: 28) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 105), spacing: 12, alignment: .leading)], alignment: .leading, spacing: 10) {
                         figure("Used", volume.used)
                         figure("Available", volume.available)
                         figure("Total", volume.totalCapacity)
@@ -159,8 +173,8 @@ struct CategoryOverview: View {
             CategoryDonutChart(usages: shown, centerTitle: "Scanned", centerValue: ByteFormatter.string(total)) { category in
                 model.showCategory(category)
             }
-            .frame(width: 200, height: 200)
-            VStack(alignment: .leading, spacing: 6) {
+            .frame(width: 170, height: 170)
+            VStack(alignment: .leading, spacing: 5) {
                 ForEach(shown) { usage in
                     Button {
                         model.showCategory(usage.category)
@@ -234,19 +248,15 @@ struct ScanProgressView: View {
                 if progress.phase.isActive {
                     ProgressView().progressViewStyle(.linear)
                 }
-                Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 6) {
-                    GridRow {
-                        stat("Files scanned", CountFormatter.string(progress.filesScanned))
-                        stat("Folders scanned", CountFormatter.string(progress.foldersScanned))
-                        stat("Storage analyzed", ByteFormatter.string(progress.bytesAnalyzed))
-                        stat("Elapsed", Duration.seconds(progress.elapsed).formatted(.time(pattern: .minuteSecond)))
-                    }
-                    GridRow {
-                        stat("New", CountFormatter.string(progress.newFiles))
-                        stat("Changed", CountFormatter.string(progress.changedFiles))
-                        stat("Removed", CountFormatter.string(progress.deletedFiles))
-                        stat("Access restricted", CountFormatter.string(progress.restrictedFolders))
-                    }
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 110), spacing: 12, alignment: .leading)], alignment: .leading, spacing: 8) {
+                    stat("Files scanned", CountFormatter.string(progress.filesScanned))
+                    stat("Folders scanned", CountFormatter.string(progress.foldersScanned))
+                    stat("Storage analyzed", ByteFormatter.string(progress.bytesAnalyzed))
+                    stat("Elapsed", Duration.seconds(progress.elapsed).formatted(.time(pattern: .minuteSecond)))
+                    stat("New", CountFormatter.string(progress.newFiles))
+                    stat("Changed", CountFormatter.string(progress.changedFiles))
+                    stat("Removed", CountFormatter.string(progress.deletedFiles))
+                    stat("Access restricted", CountFormatter.string(progress.restrictedFolders))
                 }
                 if !progress.currentPath.isEmpty && progress.phase.isActive {
                     VStack(alignment: .leading, spacing: 2) {

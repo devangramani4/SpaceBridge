@@ -13,19 +13,20 @@ struct SpaceBridgeApp: App {
         WindowGroup("SpaceBridge", id: "main") {
             ContentView()
                 .environment(model)
-                .frame(minWidth: 860, minHeight: 560)
+                .frame(minWidth: 720, minHeight: 480)
                 .task { await model.start() }
         }
         // The window can't shrink below the content's minimum, so nothing is ever clipped.
         .windowResizability(.contentMinSize)
-        .defaultSize(width: 1240, height: 800)
+        // Designed for a normal (non-full-screen) window; everything adapts down to 720 × 480.
+        .defaultSize(width: 1000, height: 660)
         .windowToolbarStyle(.unified)
         .commands { SpaceBridgeCommands(model: model) }
 
         Settings {
             SettingsView()
                 .environment(model)
-                .frame(width: 640, height: 560)
+                .frame(width: 600, height: 500)
         }
     }
 }

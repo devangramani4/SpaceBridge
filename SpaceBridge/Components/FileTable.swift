@@ -36,39 +36,39 @@ struct FileTable: View {
                 }
                 .help(file.path)
             }
-            .width(min: 180, ideal: 300)
+            .width(min: 150, ideal: 280)
 
             TableColumn("Size", value: \.allocatedSize) { file in
                 Text(ByteFormatter.string(file.allocatedSize)).monospacedDigit()
                     .help("\(file.allocatedSize.formatted()) bytes on disk · \(file.size.formatted()) bytes logical")
             }
-            .width(min: 70, ideal: 90)
+            .width(min: 62, ideal: 84)
             .alignment(.trailing)
 
             TableColumn("Type", value: \.typeSortKey) { file in
                 Text(file.displayType).foregroundStyle(.secondary)
             }
-            .width(min: 50, ideal: 70)
+            .width(min: 42, ideal: 60)
 
             TableColumn("Category", value: \.category.displayName) { file in
                 Text(file.category.displayName).foregroundStyle(.secondary).lineLimit(1)
             }
-            .width(min: 80, ideal: 110)
+            .width(min: 64, ideal: 100)
 
             TableColumn("Modified", value: \.modifiedSortKey) { file in
                 Text(file.modified.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? "—").foregroundStyle(.secondary)
             }
-            .width(min: 110, ideal: 140)
+            .width(min: 96, ideal: 130)
 
             TableColumn("Created", value: \.createdSortKey) { file in
                 Text(file.created.map { $0.formatted(date: .abbreviated, time: .omitted) } ?? "—").foregroundStyle(.secondary)
             }
-            .width(min: 80, ideal: 100)
+            .width(min: 72, ideal: 96)
 
             TableColumn("Location", value: \.folderPath) { file in
                 Text(file.folderPath.abbreviatingHome).foregroundStyle(.secondary).lineLimit(1).truncationMode(.head)
             }
-            .width(min: 160, ideal: 280)
+            .width(min: 110, ideal: 260)
         }
         .contextMenu(forSelectionType: FileItem.ID.self) { ids in
             let chosen = files.filter { ids.contains($0.id) }

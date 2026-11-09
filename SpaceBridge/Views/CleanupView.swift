@@ -49,7 +49,7 @@ struct CleanupView: View {
                         .frame(maxWidth: .infinity, minHeight: 300)
                 }
             }
-            .padding(20)
+            .padding(16)
         }
         .navigationTitle("Cleanup")
         .toolbar {

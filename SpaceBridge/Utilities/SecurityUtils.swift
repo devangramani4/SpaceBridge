@@ -99,11 +99,12 @@ enum SecurityUtils {
     ///   - additionalProtected: extra protected trees (e.g. the app's own bundle and database).
     ///   - checkFileSystem: when `true`, also inspects SIP flags and write permission on disk.
     static func evaluate(
-        path rawPath: String,
+        path inputPath: String,
         homeDirectory: String = NSHomeDirectory(),
         additionalProtected: [String] = SecurityUtils.appOwnedPaths,
         checkFileSystem: Bool = true
     ) -> PathSafety {
+        let rawPath = removingDataVolumePrefix(inputPath)
         guard rawPath.hasPrefix("/") else {
             return .protected("Only absolute paths can be modified.")
         }
@@ -181,7 +182,7 @@ enum SecurityUtils {
         guard resolveParent, standardized != "/" else { return standardized }
         let parent = (standardized as NSString).deletingLastPathComponent
         let name = (standardized as NSString).lastPathComponent
-        guard let resolved = realPath(parent) else { return standardized }
+        guard let resolved = canonicalPath(parent) else { return removingDataVolumePrefix(standardized) }
         return resolved == "/" ? "/" + name : resolved + "/" + name
     }
 
@@ -189,6 +190,24 @@ enum SecurityUtils {
         guard let pointer = realpath(path, nil) else { return nil }
         defer { free(pointer) }
         return String(cString: pointer)
+    }
+
+    /// The APFS Data volume's mount point. `realpath` resolves firmlinks such as /Users,
+    /// /Applications and /Library to paths below it.
+    static let dataVolumePrefix = "/System/Volumes/Data"
+
+    /// Resolves symlinks like `realpath`, then maps firmlinked Data-volume paths back to the
+    /// paths users see (e.g. /System/Volumes/Data/Users/me → /Users/me).
+    static func canonicalPath(_ path: String) -> String? {
+        guard let resolved = realPath(path) else { return nil }
+        return removingDataVolumePrefix(resolved)
+    }
+
+    static func removingDataVolumePrefix(_ path: String) -> String {
+        if path.lowercased().hasPrefix(dataVolumePrefix.lowercased() + "/") {
+            return String(path.dropFirst(dataVolumePrefix.count))
+        }
+        return path
     }
 
     private static func fileSystemProtection(for path: String) -> PathSafety? {

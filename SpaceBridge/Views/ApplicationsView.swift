@@ -42,18 +42,19 @@ struct ApplicationsView: View {
         VStack(spacing: 0) {
             ExplanationBanner()
             HStack {
-                TextField("Filter applications", text: $filter).textFieldStyle(.roundedBorder).frame(maxWidth: 260)
-                Toggle("Include Apple system apps", isOn: $showSystemApps).toggleStyle(.checkbox)
-                Spacer()
+                TextField("Filter", text: $filter).textFieldStyle(.roundedBorder).frame(minWidth: 100, maxWidth: 200)
+                Toggle("Apple apps", isOn: $showSystemApps).toggleStyle(.checkbox).fixedSize()
+                    .help("Include apps that ship with macOS")
+                Spacer(minLength: 8)
                 if model.apps.sizingProgress.done < model.apps.sizingProgress.total {
                     ProgressView(value: Double(model.apps.sizingProgress.done), total: Double(max(model.apps.sizingProgress.total, 1)))
-                        .frame(width: 120)
-                    Text("Measuring app sizes…").font(.caption).foregroundStyle(.secondary)
+                        .frame(width: 70)
+                        .help("Measuring app sizes…")
                 }
                 Text("\(rows.count) apps · \(ByteFormatter.string(rows.reduce(0) { $0 + ($1.size ?? 0) }))")
-                    .foregroundStyle(.secondary).monospacedDigit()
+                    .foregroundStyle(.secondary).monospacedDigit().lineLimit(1)
             }
-            .padding(.horizontal, 16).padding(.vertical, 8)
+            .padding(.horizontal, 12).padding(.vertical, 6)
             Divider()
             VSplitView {
                 if showChart {
@@ -71,15 +72,15 @@ struct ApplicationsView: View {
                         }
                         .help(row.info.path)
                     }
-                    .width(min: 160, ideal: 220)
+                    .width(min: 130, ideal: 200)
                     TableColumn("Version", value: \.versionSortKey) { Text($0.info.displayVersion).foregroundStyle(.secondary).lineLimit(1) }
-                        .width(min: 60, ideal: 90)
+                        .width(min: 50, ideal: 80)
                     TableColumn("Developer", value: \.developerSortKey) { Text($0.info.developer ?? "—").foregroundStyle(.secondary).lineLimit(1) }
-                        .width(min: 80, ideal: 140)
+                        .width(min: 60, ideal: 120)
                     TableColumn("App Size", value: \.sizeSortKey) { row in
                         Text(row.size.map { ByteFormatter.string($0) } ?? "…").monospacedDigit()
                     }
-                    .width(min: 70, ideal: 85).alignment(.trailing)
+                    .width(min: 62, ideal: 80).alignment(.trailing)
                     TableColumn("RAM", value: \.memorySortKey) { row in
                         usageText(row) { ByteFormatter.string($0.memoryBytes) }
                     }
@@ -95,9 +96,9 @@ struct ApplicationsView: View {
                             Text("Not Running").font(.caption).foregroundStyle(.secondary)
                         }
                     }
-                    .width(min: 80, ideal: 90)
+                    .width(min: 64, ideal: 84)
                     TableColumn("Architecture", value: \.archSortKey) { Text($0.info.architectureLabel).foregroundStyle(.secondary) }
-                        .width(min: 70, ideal: 100)
+                        .width(min: 60, ideal: 90)
                 }
                 .contextMenu(forSelectionType: AppRow.ID.self) { ids in
                     if let id = ids.first, let row = rows.first(where: { $0.id == id }) {
@@ -163,13 +164,13 @@ private struct ExplanationBanner: View {
                 Image(systemName: "info.circle.fill").foregroundStyle(.blue)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("App Size and RAM are different things.").font(.subheadline.weight(.semibold))
-                    Text("**App Size** is the disk space the .app bundle occupies. **RAM** is the memory its running processes (including helpers) use right now. App data in ~/Library is shown separately in each app's details.")
-                        .font(.caption).foregroundStyle(.secondary)
+                    Text("**App Size** = disk space of the .app bundle. **RAM** = memory its running processes use right now.")
+                        .font(.caption).foregroundStyle(.secondary).lineLimit(2)
                 }
                 Spacer()
                 Button { hidden = true } label: { Image(systemName: "xmark") }.buttonStyle(.borderless).help("Hide")
             }
-            .padding(10)
+            .padding(.horizontal, 12).padding(.vertical, 6)
             .background(Color.blue.opacity(0.08))
         }
     }

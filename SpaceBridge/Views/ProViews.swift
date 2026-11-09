@@ -37,7 +37,7 @@ struct ProUpgradeView: View {
                 }
                 .padding(.vertical, 22)
             }
-            .frame(height: 140)
+            .frame(height: 118)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
@@ -130,7 +130,7 @@ struct ProUpgradeView: View {
             .padding(.horizontal, 22).padding(.vertical, 12)
             .background(.bar)
         }
-        .frame(width: 600, height: 680)
+        .frame(width: 540, height: 540)
         .onChange(of: pro.isPro) { _, isPro in if isPro { dismiss() } }
     }
 
@@ -200,7 +200,7 @@ struct ProGate<Content: View>: View {
     }
 }
 
-/// Compact upgrade/status card at the bottom of the sidebar.
+/// Compact upgrade/status row at the bottom of the sidebar.
 struct SidebarProCard: View {
     @Environment(AppModel.self) private var model
 
@@ -212,29 +212,23 @@ struct SidebarProCard: View {
                 .foregroundStyle(.purple)
         case .trial:
             Button { model.showPaywall() } label: {
-                HStack {
-                    Image(systemName: "clock")
-                    Text("Pro trial · \(model.pro.trialDaysLeft ?? 0) days left").font(.caption.weight(.semibold))
-                    Spacer()
-                }
+                Label("Pro trial · \(model.pro.trialDaysLeft ?? 0) days left", systemImage: "clock")
+                    .font(.caption.weight(.semibold))
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(.plain).foregroundStyle(.purple)
         case .free, .lapsed:
             Button { model.showPaywall() } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "sparkles")
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text("Upgrade to Pro").font(.caption.weight(.bold))
-                        Text("Cleanup, duplicates & more").font(.caption2).opacity(0.85)
-                    }
-                    Spacer()
-                }
-                .foregroundStyle(.white)
-                .padding(10)
-                .background(LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing),
-                            in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                Label("Upgrade to Pro", systemImage: "sparkles")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+                    .background(LinearGradient(colors: [.purple, .blue], startPoint: .leading, endPoint: .trailing),
+                                in: RoundedRectangle(cornerRadius: 7, style: .continuous))
             }
             .buttonStyle(.plain)
+            .help("Cleanup, duplicates, developer storage and more")
         }
     }
 }

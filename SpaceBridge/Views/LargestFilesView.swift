@@ -32,7 +32,7 @@ struct LargestFilesView: View {
     @State private var files: [FileItem] = []
     @State private var selection = Set<FileItem.ID>()
     @State private var showInspector = false
-    @State private var showChart = true
+    @State private var showChart = false
     @State private var isLoading = false
 
     private var effectiveCount: Int { limit.count ?? min(max(customCount, 1), 10_000) }
@@ -44,14 +44,14 @@ struct LargestFilesView: View {
     var body: some View {
         @Bindable var model = model
         VStack(spacing: 0) {
-            HStack(spacing: 12) {
+            HStack(spacing: 10) {
                 Picker("Show", selection: $limit) {
                     ForEach(Limit.allCases) { option in
                         Text(option.isPro && !model.pro.isPro ? option.title + " ★" : option.title).tag(option)
                     }
                 }
-                .pickerStyle(.segmented)
-                .frame(maxWidth: 380)
+                .pickerStyle(.menu)
+                .fixedSize()
                 if limit == .custom {
                     TextField("Count", value: $customCount, format: .number)
                         .frame(width: 70)
@@ -65,14 +65,15 @@ struct LargestFilesView: View {
                         Label(category.displayName, systemImage: category.symbolName).tag(StorageCategory?.some(category))
                     }
                 }
-                .frame(maxWidth: 240)
-                Spacer()
+                .labelsHidden()
+                .fixedSize()
+                Spacer(minLength: 8)
                 if isLoading { ProgressView().controlSize(.small) }
                 Text("\(files.count) files · \(ByteFormatter.string(files.reduce(0) { $0 + $1.allocatedSize }))")
-                    .foregroundStyle(.secondary).monospacedDigit()
+                    .foregroundStyle(.secondary).monospacedDigit().lineLimit(1)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             Divider()
 
             if files.isEmpty && !isLoading {

@@ -55,7 +55,7 @@ struct DeveloperStorageView: View {
                 Text("To clean developer storage safely, see Cleanup — it recommends the tool's own commands (for example `docker system prune`) where manual deletion would be risky.")
                     .font(.caption).foregroundStyle(.secondary)
             }
-            .padding(20)
+            .padding(16)
         }
         .navigationTitle("Developer Storage")
         .toolbar {

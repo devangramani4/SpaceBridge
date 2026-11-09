@@ -24,7 +24,7 @@ struct ScanConfiguration: Sendable, Equatable {
     func normalizedRoots() -> [String] {
         var resolved: [String] = []
         for root in roots {
-            guard let real = SecurityUtils.realPath(root) else { continue }
+            guard let real = SecurityUtils.canonicalPath(root) else { continue }
             if !resolved.contains(real) { resolved.append(real) }
         }
         return resolved.filter { candidate in
@@ -233,7 +233,8 @@ final class FileScanner: Sendable {
         let queue = DirectoryWorkQueue()
         var rootJobs: [DirectoryWorkQueue.Job] = []
         for root in roots {
-            switch DirectoryReader.stat(path: root) {
+            // Stat the resolved location so the root's device is the volume its contents live on.
+            switch DirectoryReader.stat(path: SecurityUtils.realPath(root) ?? root) {
             case .success(let entry) where entry.kind == .directory:
                 let id = try await database.ensureRoot(path: root, modified: entry.modified)
                 rootJobs.append(DirectoryWorkQueue.Job(path: root, name: root.lastPathComponentString, parentID: nil, folderID: id, depth: 0, device: entry.device))

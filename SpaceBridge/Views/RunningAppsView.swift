@@ -34,15 +34,13 @@ struct RunningAppsView: View {
                 Picker("Show", selection: $scope) {
                     ForEach(Scope.allCases) { Text($0.rawValue).tag($0) }
                 }
-                .pickerStyle(.segmented).frame(maxWidth: 360)
-                TextField("Filter by name or PID", text: $filter).textFieldStyle(.roundedBorder).frame(maxWidth: 220)
-                Spacer()
-                Text("\(processes.count) processes").foregroundStyle(.secondary)
-                if let date = model.monitor.lastProcessSample {
-                    Text("Updated \(date.formatted(date: .omitted, time: .standard))").font(.caption).foregroundStyle(.tertiary)
-                }
+                .pickerStyle(.menu).fixedSize()
+                TextField("Name or PID", text: $filter).textFieldStyle(.roundedBorder).frame(minWidth: 100, maxWidth: 200)
+                Spacer(minLength: 8)
+                Text("\(processes.count) processes").foregroundStyle(.secondary).lineLimit(1)
+                    .help(model.monitor.lastProcessSample.map { "Updated \($0.formatted(date: .omitted, time: .standard))" } ?? "")
             }
-            .padding(.horizontal, 16).padding(.vertical, 8)
+            .padding(.horizontal, 12).padding(.vertical, 6)
             Divider()
             ProcessTable(processes: processes, selection: $selection) { process, force in
                 pendingQuit = (process: process, force: force)

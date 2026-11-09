@@ -4,7 +4,7 @@ struct LargestFoldersView: View {
     @Environment(AppModel.self) private var model
     @State private var tree = FolderTreeModel()
     @State private var selection: FolderItem.ID?
-    @State private var showChart = true
+    @State private var showChart = false
     @State private var showPermissionHelp = false
 
     private var selectedFolder: FolderItem? {

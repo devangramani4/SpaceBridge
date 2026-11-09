@@ -5,7 +5,7 @@ import Foundation
 /// Stores only metadata — paths, sizes, dates, types. Never file contents. Nothing leaves the Mac.
 /// All access is serialized by the actor; scanning writes are batched into large transactions.
 actor StorageDatabase {
-    static let schemaVersion = 1
+    static let schemaVersion = 2
 
     let url: URL
     private let db: SQLiteConnection
@@ -93,6 +93,11 @@ actor StorageDatabase {
         CREATE TABLE IF NOT EXISTS category_totals(category INTEGER PRIMARY KEY, bytes INTEGER, files INTEGER);
         CREATE TABLE IF NOT EXISTS errors(id INTEGER PRIMARY KEY, timestamp REAL, path TEXT, message TEXT);
         """)
+        // v1 caches could hold firmlink paths (/System/Volumes/Data/...): start fresh.
+        let stored = try db.query("SELECT value FROM meta WHERE key = 'schema_version'") { $0.text(0) }.first.flatMap { Int($0) }
+        if let stored, stored < schemaVersion {
+            try db.execute("DELETE FROM files; DELETE FROM folders; DELETE FROM scans; DELETE FROM history; DELETE FROM category_totals;")
+        }
         try db.run("INSERT OR REPLACE INTO meta(key, value) VALUES('schema_version', ?)", [.text(String(schemaVersion))])
     }
 

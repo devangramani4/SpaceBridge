@@ -10,16 +10,16 @@ struct PrivacyView: View {
             VStack(alignment: .leading, spacing: 18) {
                 HStack(spacing: 16) {
                     Image(systemName: "lock.shield.fill")
-                        .font(.system(size: 52))
+                        .font(.system(size: 42))
                         .foregroundStyle(.green.gradient)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Your data stays on this Mac").font(.largeTitle.weight(.bold))
+                        Text("Your data stays on this Mac").font(.title.weight(.bold))
                         Text("SpaceBridge works completely offline. No one — not even Genius Bridge Technologies, the developer — can see, collect or share your files or your file information.")
-                            .font(.title3).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                            .font(.body).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                     }
                 }
 
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 260), spacing: 12)], spacing: 12) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 230), spacing: 10)], spacing: 12) {
                     PrivacyPoint(symbol: "wifi.slash", tint: .blue, title: "Works offline",
                                  text: "Scanning, analysis, search, cleanup and CPU/RAM monitoring run entirely on your Mac and never use the internet.")
                     PrivacyPoint(symbol: "eye.slash", tint: .purple, title: "Nothing is uploaded",
@@ -50,7 +50,7 @@ struct PrivacyView: View {
                     }
                 }
             }
-            .padding(24)
+            .padding(16)
             .frame(maxWidth: 980, alignment: .leading)
         }
         .navigationTitle("Privacy")

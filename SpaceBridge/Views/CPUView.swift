@@ -3,7 +3,7 @@ import SwiftUI
 
 struct CPUView: View {
     @Environment(AppModel.self) private var model
-    private let columns = [GridItem(.adaptive(minimum: 160), spacing: 12)]
+    private let columns = [GridItem(.adaptive(minimum: 140), spacing: 10)]
 
     var body: some View {
         ScrollView {
@@ -49,7 +49,7 @@ struct CPUView: View {
                     ProgressView("Measuring CPU usage…").frame(maxWidth: .infinity, minHeight: 200)
                 }
             }
-            .padding(20)
+            .padding(16)
         }
         .navigationTitle("CPU")
         .onAppear { model.monitor.subscribe(processes: true); Task { await model.monitor.tick() } }

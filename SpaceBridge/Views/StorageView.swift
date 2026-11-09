@@ -67,7 +67,7 @@ struct StorageView: View {
                     ScanRequiredView().frame(minHeight: 260)
                 }
             }
-            .padding(20)
+            .padding(16)
         }
         .navigationTitle("Storage")
         .task(id: model.scan.dataVersion) { await reload() }

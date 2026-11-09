@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MemoryView: View {
     @Environment(AppModel.self) private var model
-    private let columns = [GridItem(.adaptive(minimum: 170), spacing: 12)]
+    private let columns = [GridItem(.adaptive(minimum: 140), spacing: 10)]
 
     var body: some View {
         ScrollView {
@@ -40,7 +40,7 @@ struct MemoryView: View {
                     ProgressView("Reading memory statistics…").frame(maxWidth: .infinity, minHeight: 200)
                 }
             }
-            .padding(20)
+            .padding(16)
         }
         .navigationTitle("Memory")
         .onAppear { model.monitor.subscribe(processes: true); Task { await model.monitor.tick() } }

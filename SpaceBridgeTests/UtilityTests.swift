@@ -132,6 +132,15 @@ final class SecurityUtilsTests: XCTestCase {
         XCTAssertFalse(result.allowsDestructiveActions)
     }
 
+    func testFirmlinkPathsMapToUserVisiblePaths() {
+        XCTAssertEqual(SecurityUtils.removingDataVolumePrefix("/System/Volumes/Data/Users/dev/Downloads"), "/Users/dev/Downloads")
+        XCTAssertEqual(SecurityUtils.removingDataVolumePrefix("/Users/dev"), "/Users/dev")
+        // A user's own file reached through the Data volume path is not "System".
+        XCTAssertEqual(evaluate("/System/Volumes/Data/Users/dev/Downloads/big.zip"), .allowed)
+        XCTAssertEqual(SecurityUtils.canonicalPath("/Users"), "/Users")
+        XCTAssertEqual(SecurityUtils.canonicalPath("/Applications"), "/Applications")
+    }
+
     func testCriticalProcessesAreProtected() {
         let uid = getuid()
         XCTAssertFalse(SecurityUtils.evaluateProcess(pid: 1, name: "launchd", executablePath: "/sbin/launchd", ownerUID: 0, currentUID: uid).canTerminate)

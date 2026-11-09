@@ -25,14 +25,16 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationSplitViewColumnWidth(min: 200, ideal: 220, max: 280)
-            .safeAreaInset(edge: .top) { SidebarHeader() }
-            .safeAreaInset(edge: .bottom) {
-                VStack(alignment: .leading, spacing: 10) {
+            .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 260)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                VStack(alignment: .leading, spacing: 8) {
                     SidebarProCard()
                     SidebarScanStatus()
                 }
-                .padding(10)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(.bar)
+                .overlay(alignment: .top) { Divider() }
             }
         } detail: {
             DetailRouter(item: model.selection ?? .dashboard)
@@ -123,32 +125,12 @@ struct ScanToolbar: ToolbarContent {
     }
 }
 
-private struct SidebarHeader: View {
-    @Environment(AppModel.self) private var model
-
-    var body: some View {
-        HStack(spacing: 10) {
-            Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 30, height: 30)
-            VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 5) {
-                    Text("SpaceBridge").font(.headline)
-                    if model.pro.isPro { ProBadge() }
-                }
-                Text("Genius Bridge Technologies").font(.caption2).foregroundStyle(.secondary)
-            }
-            Spacer()
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 8)
-    }
-}
-
 private struct SidebarScanStatus: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
         let progress = model.scan.progress
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 3) {
             if progress.phase.isActive {
                 HStack {
                     Text(progress.phase == .paused ? "Paused" : progress.phase == .finalizing ? "Finishing…" : "Scanning…")
@@ -166,7 +148,14 @@ private struct SidebarScanStatus: View {
             } else {
                 Text("Not scanned yet").font(.caption).foregroundStyle(.secondary)
             }
-            PrivacyNotice(compact: true).padding(.top, 4)
+            Button { model.selection = .privacy } label: {
+                Label("Offline · Data stays on this Mac", systemImage: "lock.shield.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.green)
+                    .lineLimit(1)
+            }
+            .buttonStyle(.plain)
+            .help("SpaceBridge works offline. Your files and file information never leave this Mac.")
         }
     }
 }

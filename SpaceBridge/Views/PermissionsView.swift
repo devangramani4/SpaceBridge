@@ -56,7 +56,7 @@ struct PermissionsView: View {
                 }
                 PrivacyNotice()
             }
-            .padding(20)
+            .padding(16)
         }
         .navigationTitle("Storage Access")
         .sheet(isPresented: $showHelp) { PermissionHelpSheet() }
