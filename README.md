@@ -30,6 +30,32 @@ The free tier covers scanning, the dashboard, Largest Files (up to Top 100), Lar
 
 Licensing goes through Lemon Squeezy, which acts as merchant of record and collects US sales tax. Before release, put your store values in `ProConfiguration` (`Services/LicenseService.swift`). See **[MONETIZATION.md](MONETIZATION.md)** for pricing, payment setup, legal pages and the US go-to-market plan.
 
+## iPhone, iPad and Apple Watch
+
+The same Xcode project contains **SpaceBridgeMobile** (iPhone and iPad, iOS 17+) and **SpaceBridgeWatch** (watchOS 10+, installed together with the iPhone app).
+
+iOS keeps every app sandboxed, so the mobile apps can't scan the whole device or see other apps. They work with what iOS allows:
+
+| Screen | What it does |
+|---|---|
+| Overview | Device storage ring (used, available, total) and photo library totals |
+| Photos & Videos | Largest videos and items, screenshots, likely duplicates (same type, dimensions, byte size and capture second). Deletion goes through iOS, which asks again and keeps items in Recently Deleted for 30 days |
+| Files | Largest files in any folder you pick in the Files app (iCloud Drive, On My iPhone, USB drives) |
+| Device | Whole-device RAM, wired and compressed memory, CPU %, battery, thermal state, Low Power Mode, and SpaceBridge's own memory |
+| Tips, Privacy, Settings | Storage tips, the privacy promise, Pro status and Restore Purchases |
+| Apple Watch | iPhone storage gauge, what can be freed (Pro), and the watch's own storage and battery. The summary travels directly from iPhone to Watch over WatchConnectivity and contains totals only |
+
+Layout: tabs on iPhone, a sidebar on iPad.
+
+**Pro on iOS** uses StoreKit 2 auto-renewable subscriptions, because Apple requires in-app purchase for App Store apps, and Apple's `SubscriptionStoreView` for the purchase screen. Create the subscription group and the products `com.geniusbridge.spacebridge.pro.yearly` and `…pro.monthly` in App Store Connect, and set prices there. Mac (Lemon Squeezy) and iOS (App Store) Pro are separate purchases.
+
+**Running the mobile apps:**
+1. Select the **SpaceBridgeMobile** scheme and an iPhone or iPad simulator (or your device).
+2. Press ⌘R.
+3. For a real device, choose your Team in *Signing & Capabilities* for both SpaceBridgeMobile and SpaceBridgeWatch.
+4. To test purchases without App Store Connect: File ▸ New ▸ File ▸ StoreKit Configuration File, add the two product IDs, then select that file in Scheme ▸ Run ▸ Options ▸ StoreKit Configuration.
+5. For the watch, select the **SpaceBridgeWatch** scheme with a paired watch simulator.
+
 ## Safety model
 
 - **Scanning is read-only.** It uses only `opendir`/`readdir`/`lstat`, never follows symlinks, never crosses into other mounted volumes, and never opens file contents. Only the duplicate finder reads contents, and only for candidates.

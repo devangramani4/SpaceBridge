@@ -117,7 +117,14 @@ Host these at `geniusbridge.com/spacebridge/…`:
 
 Track three numbers weekly: downloads, trial starts and paid conversions. Lemon Squeezy's dashboard shows revenue, MRR and churn.
 
-## 7. Launch checklist
+## 7. iPhone, iPad and Apple Watch
+
+- **Sold through the App Store** with StoreKit subscriptions. Apple takes 15% under the Small Business Program (revenue below $1M) and handles US sales tax.
+- **Recommended pricing:** US iPhone users pay much less for utilities than Mac users. Suggested: **$2.99/month or $19.99/year**, with a 1-week free trial set as an introductory offer in App Store Connect. $99.99/year on iPhone would convert very poorly.
+- **Free:** storage overview, the top 10 largest videos and items, device monitor and tips. **Pro:** duplicates, screenshot cleanup, bulk delete, the Files scanner, full lists and the Watch glance.
+- **App Store review notes:** explain that the Photos permission is used only for on-device size analysis, and that deletions go through iOS's own confirmation. Fill in the App Privacy label as **"Data Not Collected"**, which is accurate for this app.
+
+## 8. Launch checklist
 
 - [ ] Apple Developer Program ($99/year), Developer ID certificate, notarization (`scripts/release.sh`)
 - [ ] Lemon Squeezy store live, product and license keys configured, `ProConfiguration` filled in
