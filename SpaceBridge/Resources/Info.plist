@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>SpaceBridge</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2026 Genius Bridge Technologies. All rights reserved.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>SpaceBridge reads file sizes and dates in your Documents folder to show what uses disk space. Nothing leaves your Mac.</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>SpaceBridge reads file sizes and dates on your Desktop to show what uses disk space. Nothing leaves your Mac.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>SpaceBridge reads file sizes and dates in your Downloads folder to show what uses disk space. Nothing leaves your Mac.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>SpaceBridge reads file sizes on external drives you choose to analyze. Nothing leaves your Mac.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>SpaceBridge reads file sizes on network volumes only if you enable network volume scanning. Nothing leaves your Mac.</string>
+</dict>
+</plist>
